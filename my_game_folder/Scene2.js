@@ -57,7 +57,7 @@ class Scene2 extends Phaser.Scene {
             projectile.destroy();
         });
 
-        this.physics.add.overlap(this.player, this.powerUps, this,pickPowerUp, null, this);
+        this.physics.add.overlap(this.player, this.powerUps, this.pickPowerUp, null, this);
         this.physics.add.overlap(this.player, this.enemies, this.hurtPlayer, null, this);
         this.physics.add.overlap(this.projectiles, this.enemies, this.hitEnemy, null, this);
 
@@ -75,6 +75,24 @@ class Scene2 extends Phaser.Scene {
         this.score = 0;
 
         this.scoreLabel = this.add.bitmapText(10, 5, "pixelFont", "SCORE ", 16);
+    }
+
+    moveShip(ship, speed) {
+        ship.y += speed;
+        if (ship.y > config.height) {
+            this.resetShipPos(ship);
+        }
+    }
+
+    resetShipPos(ship) {
+        ship.y = 0;
+        var randomX = Phaser.Math.Between(0, config.width);
+        ship.x = randomX;
+    }
+
+    destroyShip(pointer, gameObject) {
+        gameObject.setTexture("explosion");
+        gameObject.play("explode");
     }
 
     update() {
@@ -110,24 +128,6 @@ class Scene2 extends Phaser.Scene {
         } else if(this.cursorKeys.down.isDown) {
             this.player.setVelocityY(gameSettings,playerSpeed);
         }
-    }
-
-    moveShip(ship, speed) {
-        ship.y += speed;
-        if (ship.y > config.height) {
-            this.resetShipPos(ship);
-        }
-    }
-
-    resetShipPos(ship) {
-        ship.y = 0;
-        var randomX = Phaser.Math.Between(0, config.width);
-        ship.x = randomX;
-    }
-
-    destroyShip(pointer, gameObject) {
-        gameObject.setTexture("explosion");
-        gameObject.play("explode");
     }
 
     shootBeam() {
